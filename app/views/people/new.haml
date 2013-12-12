@@ -1,0 +1,93 @@
+- content_for :javascript do
+  initialize_signup_form("#{I18n.locale}","#{t("people.new.username_is_in_use")}","#{t("people.new.username_is_invalid")}","#{email_not_accepted_message}","#{t("people.new.captcha_was_wrong")}", "#{t("people.new.invalid_invitation_code")}", #{@current_community.real_name_required?}, #{@current_community.join_with_invite_only?} );
+
+
+- content_for :title_header do
+  %h1= t('.sign_up')
+
+.signup-form.centered-section
+
+  - unless !facebook_connect_in_use? || params[:no_fb]
+    = render :partial => "layouts/facebook_connect_button", :locals => { :button_text => t(".create_account_with_facebook") }
+    %p= t(".or_create_new_account_without_facebook")
+  
+  - if community_file?("signup_information", true)
+    = render :file => community_file("signup_information", true)
+  - elsif @current_community.allowed_emails
+    %p
+      = t('.email_restriction_instructions', 
+            :community_name => @current_community.name,
+            :allowed_emails => @current_community.allowed_emails,
+            :count => (@current_community.allowed_emails.split(",").count)) 
+  - if @current_community.label.eql?("okl")
+    %p
+      = t('okl.member_id_is_your_username')
+      = link_to t("okl.join_here"), "http://www.omakotiliitto.fi/liittymislomake", :class => "green_part_link"
+  
+  -# Experimental feature for importing profiledata via RDF
+  - if @current_community.uses_rdf_profile_import?
+    = form_tag("/people/fetch_rdf_profile", :method => "get") do
+      %p
+        You can prefill your account information easily if you have an existing profile somewhere online and you can get an URL to the RDF version of your info.
+      = label_tag(:rdf_profile_url, t("Your RDF profile URL:"))
+      = text_field_tag(:rdf_profile_url, params[:rdf_profile_url],:placeholder => "e.g. https://my-profile.eu/people/gnomet/card#me") 
+      = button_tag("Prefill the from") 
+  
+  
+  
+  = form_for @person, :url => APP_CONFIG.login_domain.to_s + people_path do |form|
+    
+    -# Invite code
+    - if @current_community.join_with_invite_only?
+      .inline-label-container
+        = label_tag :invitation_code, t('.invitation_code'), :class => "inline"
+        = link_to(t('common.what_is_this'), "#", :tabindex => "-1", :id => "help_invitation_code_link", :class => "label-info")
+      = text_field_tag "invitation_code", nil, :class => :text_field, :maxlength => "20", :value => (params[:code] || "")
+    - elsif params[:code]
+      = hidden_field_tag "invitation_code", params[:code]
+    
+    -# Username
+    = form.label :username, username_label
+    = form.text_field :username, :class => :text_field, :maxlength => "20", :id => "person_username1"
+    
+    -# Name
+    - if @current_community.only_organizations
+      = form.label :organization_name, t('organizations.form.name')
+      = form.text_field :organization_name, :class => :text_field, :maxlength => "30"
+    - else
+      = form.label :given_name, t('.given_name')
+      = form.text_field :given_name, :class => :text_field, :maxlength => "30"
+      = form.label :family_name, t('.family_name')
+      = form.text_field :family_name, :class => :text_field, :maxlength => "30"
+
+    -# Email
+    = form.label :email, t('.email')
+    = form.text_field :email, :class => :text_field, :maxlenght => "255"
+    
+    -# Honey pot: hidden field to detect spammers
+    = form.label :email_repeated, "You should not see this field, if CSS is working. If you see this, please send feedback!", :class => "unwanted_text_field" 
+    = form.text_field :email_repeated, :class => "unwanted_text_field", :id => "error_regristration_unwanted_email2", :autocomplete => "off"       
+     
+    -# Password 
+    = form.label :password, t('common.password')
+    = form.password_field :password, :class => :text_field, :maxlength => "255", :id => "person_password1"
+    = form.label :password2, t('.password_again')
+    = form.password_field :password2, :class => :text_field, :maxlength => "255"
+    
+    -# Terms
+    .outer-checkbox-container
+      .checkbox-container
+        - unless @skip_terms_checkbox
+          %input{:type => "checkbox", :id => "person_terms", :name => "person[terms]"}
+          = form.label :terms, t('.i_accept_the'), :class => "checkbox"
+          = link_to t(".terms"), "#", :tabindex => "-1", :id => "terms_link", :class => "form"
+    
+    = form.hidden_field :consent, :value => @current_community.consent
+    = hidden_field_tag :community, @current_community.domain
+    
+    = button_tag t('.create_new_account')
+
+
+= render :partial => "help_texts", :collection => ["terms", "help_invitation_code"], :as => :field
+        
+        

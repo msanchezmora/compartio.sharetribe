@@ -1,0 +1,29 @@
+@import "mixins/all";
+
+.visible-tablet {
+  display: none;
+
+  @include media(tablet) {
+    display: block;
+  }
+}
+
+.hidden-tablet {
+  @include media(tablet) {
+    display: none;
+  }
+}
+
+.visible-desktop {
+  display: none;
+
+  @include media(desktop) {
+    display: block;
+  }
+}
+
+.hidden-desktop {
+  @include media(desktop) {
+    display: none;
+  }
+}

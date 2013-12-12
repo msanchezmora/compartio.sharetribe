@@ -1,0 +1,31 @@
+- content_for :javascript do
+  initialize_reply_form('#{I18n.locale}');
+
+= render :partial => "layouts/left_hand_navigation", :locals => { :links => inbox_links_for(@current_user) }
+
+- content_for :title_header do
+  %h1= t("layouts.no_tribe.inbox")
+
+.left-navi-section.conversation
+  %h2= @conversation.title
+  .avatar-container
+    .avatar
+      = small_avatar_thumb @other_party
+    .avatar-text
+      = render :partial => "conversation_with", :locals => { :conversation => @conversation, :other_party => @other_party }  
+
+  #messages
+    = render :partial => "message", :collection => @conversation.messages
+  
+  - if @conversation.listing && !@conversation.status.eql?("free")
+    .conversation-status-lower
+      .conversation-status-container{:id => "conversation_#{@conversation.id.to_s}_status"}
+        = render :partial => "status", :locals => { :conversation => @conversation }
+  
+  #reply_form
+    = form_for Message.new, :url => person_message_messages_path(:person_id => @current_user.id, :message_id => @conversation.id.to_s) do |f|
+      = f.label :content, t(".write_a_reply")
+      = f.text_area :content, :class => "reply_form_text_area"
+      = f.hidden_field :conversation_id, :value => @conversation.id.to_s
+      = f.hidden_field :sender_id, :value => @current_user.id
+      = f.button t(".send_reply")

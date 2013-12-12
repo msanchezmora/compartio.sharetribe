@@ -1,0 +1,8 @@
+.lightbox{:id => field}
+  .lightbox-content
+    %h2= t(".#{field}_title")
+    %a{:href => "#", :class => "close lightbox-x", :id => "close_x"}
+      .ss-delete
+    - text_with_line_breaks do
+      = render :partial => "listings/help_texts/#{field}"
+    

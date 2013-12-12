@@ -1,0 +1,14 @@
+.lightbox{:id => field}
+  .lightbox-content
+    %h2 
+      - if field.eql?("terms")
+        - if @current_community
+          = render :file => community_file("terms_title", false)
+        - else
+          = t("people.help_texts.terms_title")
+      - else
+        .hidden_title
+          = t(".#{field}_title")
+    %a{:href => "#", :class => "close lightbox-x", :id => "close_x"}
+      .ss-delete
+    = render :partial => "people/help_texts/#{field}"

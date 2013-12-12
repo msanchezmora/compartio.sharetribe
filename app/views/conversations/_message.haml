@@ -1,0 +1,14 @@
+.message{:id => "message#{message.id.to_s}"}
+  .avatar
+    = small_avatar_thumb(message.sender)
+  %h3
+    = link_to message.sender.name(@current_community), message.sender
+  - if message.action
+    - if message.action.eql?("pay")
+      %b= t(".paid", :sum => humanized_money_with_symbol(message.conversation.payment.total_sum))
+    - else
+      %b= t(".#{message.action}ed_#{message.conversation.discussion_type}")
+  %small= time_ago(message.created_at)
+  .message-content
+    - text_with_line_breaks do  
+      = message.content

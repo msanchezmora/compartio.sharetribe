@@ -1,0 +1,32 @@
+it:
+  dashboard:
+    faq:
+      faq_title: FAQ
+      new_tribe_link: ~
+      tribes_map_link: ~
+      translations_link: "stato attuale delle traduzioni"
+      github_link: Github
+      q1: "Cos'è Sharetribe?"
+      a1: ~
+      q2: "Cosa puoi condividere su Sharetribe?"
+      a2: ~
+      q3: "Perché Sharetribe?"
+      a3: ~
+      q4: ~
+      a4: ~
+      q5: "Chi c'è dietro Sharetribe?"
+      a5: ~
+      q6: ~
+      a6: ~
+      q7: "È sicuro prestare i miei oggetti a persone che non conosco?"
+      a7: ~
+      q8: "Dove è già usato Sharetribe?"
+      a8: ~
+      q9: "Posso avere Sharetribe nella mia lingua?"
+      a9: ~
+      q10: "Sharetribe è Open Source?"
+      a10: ~
+      q11: ~
+      a11: ~
+      q12: "Quanto costa Sharetribe?"
+      a12: ~
